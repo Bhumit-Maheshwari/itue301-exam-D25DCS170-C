@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const requestLogger = require("./middleware/requestLogger");
 const errorHandler = require("./middleware/errorHandler");
 const bookRoutes = require("./routes/bookRoutes");
@@ -6,6 +7,9 @@ const borrowingRoutes = require("./routes/borrowingRoutes");
 
 const app = express();
 const PORT = 5000;
+
+// Enable CORS for React frontend
+app.use(cors());
 
 // Parse JSON body
 app.use(express.json());

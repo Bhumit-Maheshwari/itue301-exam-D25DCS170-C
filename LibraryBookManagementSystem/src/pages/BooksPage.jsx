@@ -1,22 +1,60 @@
+import { useState, useEffect } from "react";
 import BookCard from "../components/BookCard";
 
-const books = [
-    { title: "Clean Code", author: "Robert C. Martin", category: "Software Engineering", available: true },
-    { title: "The Pragmatic Programmer", author: "David Thomas", category: "Software Engineering", available: true },
-    { title: "Introduction to Algorithms", author: "Thomas H. Cormen", category: "Computer Science", available: false },
-    { title: "Design Patterns", author: "Erich Gamma", category: "Software Engineering", available: true },
-    { title: "Database System Concepts", author: "Abraham Silberschatz", category: "Database", available: false },
-    { title: "Computer Networking", author: "James Kurose", category: "Networking", available: true },
-];
-
 function BooksPage() {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/api/v1/books");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch books");
+                }
+                const result = await response.json();
+                setData(result.data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBooks();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="books-page">
+                <h2>Books Collection</h2>
+                <p className="loading-message">Loading books...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="books-page">
+                <h2>Books Collection</h2>
+                <p className="error-message">Error: {error}</p>
+            </div>
+        );
+    }
+
     return (
         <div className="books-page">
             <h2>Books Collection</h2>
             <div className="books-grid">
-                {books.map((book, index) => (
-                    <BookCard key={index} title={book.title} author={book.author}
-                        category={book.category} available={book.available} />
+                {data.map((book) => (
+                    <BookCard
+                        key={book.id}
+                        title={book.title}
+                        author={book.author}
+                        category={book.category}
+                        available={book.available}
+                    />
                 ))}
             </div>
         </div>
