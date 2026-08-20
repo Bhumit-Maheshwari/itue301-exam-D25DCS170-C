@@ -1,16 +1,57 @@
-# React + Vite
+# Library Book Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A digitized management system for college library books, members, and borrowing records.
 
-Currently, two official plugins are available:
+## Project Structure
+- `LibraryBookManagementSystem/`: React frontend (Vite)
+- `LibraryBookManagementSystem/backend/`: Express.js backend (REST API & MongoDB/Mongoose)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) installed
+- [MongoDB](https://www.mongodb.com/) running locally on port `27017` (or MongoDB Atlas connection string)
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### 2. Backend Setup
+1. Open a terminal and navigate to the backend folder:
+   ```bash
+   cd LibraryBookManagementSystem/backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create your `.env` file from the example:
+   ```bash
+   cp .env.example .env
+   ```
+4. In `.env`, set your connection string:
+   ```text
+   MONGO_URI=mongodb://127.0.0.1:27017/libraryDB
+   ```
+5. Start the backend server:
+   ```bash
+   npm start
+   ```
+   *The server runs on http://localhost:5000*
+
+---
+
+### 3. Frontend Setup
+1. Open a new terminal and navigate to the frontend root folder:
+   ```bash
+   cd LibraryBookManagementSystem
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite React development server:
+   ```bash
+   npm run dev
+   ```
+   *The web app opens on http://localhost:5173*

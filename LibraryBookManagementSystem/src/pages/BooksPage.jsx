@@ -49,7 +49,7 @@ function BooksPage() {
             <div className="books-grid">
                 {data.map((book) => (
                     <BookCard
-                        key={book.id}
+                        key={book._id}
                         title={book.title}
                         author={book.author}
                         category={book.category}

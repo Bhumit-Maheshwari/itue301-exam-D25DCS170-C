@@ -1,29 +1,32 @@
 const express = require("express");
 const router = express.Router();
+const Borrowing = require("../models/Borrowing");
 
-// In-memory borrowings array
-const borrowings = [];
-
-// GET /api/v1/borrowings — Return all borrowings
-router.get("/", (req, res) => {
-    res.status(200).json({ success: true, data: borrowings });
+// GET /api/v1/borrowings — Return all borrowings with populated references
+router.get("/", async (req, res, next) => {
+    try {
+        const borrowings = await Borrowing.find().populate("memberId").populate("bookId");
+        res.status(200).json({ success: true, data: borrowings });
+    } catch (err) {
+        next(err);
+    }
 });
 
 // POST /api/v1/borrowings — Create a new borrowing
-router.post("/", (req, res) => {
-    const { memberId, bookId, borrowDate, returnDate, status } = req.body;
-
-    const newBorrowing = {
-        id: borrowings.length + 1,
-        memberId,
-        bookId,
-        borrowDate,
-        returnDate,
-        status: status || "borrowed"
-    };
-
-    borrowings.push(newBorrowing);
-    res.status(201).json({ success: true, data: newBorrowing });
+router.post("/", async (req, res, next) => {
+    try {
+        const borrowing = await Borrowing.create(req.body);
+        res.status(201).json({ success: true, data: borrowing });
+    } catch (err) {
+        if (err.name === "ValidationError") {
+            return res.status(400).json({
+                success: false,
+                message: "Validation failed",
+                errors: Object.values(err.errors).map(e => e.message)
+            });
+        }
+        next(err);
+    }
 });
 
 module.exports = router;

@@ -1,19 +1,32 @@
 const express = require("express");
 const router = express.Router();
+const Book = require("../models/Book");
 
-// In-memory books array
-const books = [
-    { id: 1, title: "Clean Code", author: "Robert C. Martin", category: "Software Engineering", isbn: "978-0132350884", available: true },
-    { id: 2, title: "The Pragmatic Programmer", author: "David Thomas", category: "Software Engineering", isbn: "978-0135957059", available: true },
-    { id: 3, title: "Introduction to Algorithms", author: "Thomas H. Cormen", category: "Computer Science", isbn: "978-0262033848", available: false },
-    { id: 4, title: "Design Patterns", author: "Erich Gamma", category: "Software Engineering", isbn: "978-0201633610", available: true },
-    { id: 5, title: "Database System Concepts", author: "Abraham Silberschatz", category: "Database", isbn: "978-0078022159", available: false },
-    { id: 6, title: "Computer Networking", author: "James Kurose", category: "Networking", isbn: "978-0133594140", available: true },
-];
+// GET /api/v1/books — Return all books from MongoDB
+router.get("/", async (req, res, next) => {
+    try {
+        const books = await Book.find();
+        res.status(200).json({ success: true, data: books });
+    } catch (err) {
+        next(err);
+    }
+});
 
-// GET /api/v1/books — Return all books
-router.get("/", (req, res) => {
-    res.status(200).json({ success: true, data: books });
+// POST /api/v1/books — Create a new book (demonstrates schema working)
+router.post("/", async (req, res, next) => {
+    try {
+        const book = await Book.create(req.body);
+        res.status(201).json({ success: true, data: book });
+    } catch (err) {
+        if (err.name === "ValidationError") {
+            return res.status(400).json({
+                success: false,
+                message: "Validation failed",
+                errors: Object.values(err.errors).map(e => e.message)
+            });
+        }
+        next(err);
+    }
 });
 
 module.exports = router;
